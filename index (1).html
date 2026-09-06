@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kapish Magotra — build log</title>
+<meta name="description" content="Kapish Magotra — B.Tech CSE student building in cloud and AI, creating content, and performing as an award-winning vocalist.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0F1626;
+    --panel: #16213A;
+    --line: #2B3654;
+    --text: #E9E4D8;
+    --text-dim: #9AA4BC;
+    --amber: #E8A33D;
+    --sage: #6FA98A;
+    --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Consolas, monospace;
+    --sans: 'Inter', -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  }
+
+  a { color: var(--amber); text-decoration-color: rgba(232,163,61,0.4); text-underline-offset: 3px; }
+  a:hover { text-decoration-color: var(--amber); }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+  .nav {
+    position: sticky;
+    top: 0;
+    background: rgba(15,22,38,0.9);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+    z-index: 10;
+  }
+  .nav-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .nav-inner a { color: var(--text-dim); margin-left: 18px; }
+  .nav-inner a:hover { color: var(--amber); }
+  .nav-tag { color: var(--sage); }
+
+  .hero { padding: 72px 0 56px; }
+  .prompt { font-family: var(--mono); font-size: 14px; color: var(--text-dim); margin-bottom: 14px; }
+  .prompt::before { content: "$ "; color: var(--sage); }
+  #typed { border-right: 2px solid var(--amber); padding-right: 3px; }
+  #typed.done { animation: blink 1s step-end infinite; }
+  @keyframes blink { 50% { border-color: transparent; } }
+  @media (prefers-reduced-motion: reduce) {
+    #typed.done { animation: none; border-color: transparent; }
+  }
+
+  h1 {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: clamp(28px, 5vw, 40px);
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .role { color: var(--text-dim); font-size: 16px; margin: 0 0 24px; max-width: 62ch; }
+  .hero-links { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 9px 16px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .btn:hover { border-color: var(--amber); color: var(--amber); }
+  .btn.primary { background: var(--amber); border-color: var(--amber); color: #0F1626; font-weight: 500; }
+  .btn.primary:hover { background: #f0b45c; color: #0F1626; }
+
+  section { padding: 40px 0; border-top: 1px solid var(--line); }
+  .tag { font-family: var(--mono); font-size: 13px; color: var(--amber); margin: 0 0 18px; }
+  section p { max-width: 62ch; color: var(--text); }
+  section > .wrap > p { margin-top: 0; }
+  .about-text { font-size: 15.5px; color: var(--text); }
+
+  .stack-grid { display: grid; grid-template-columns: 150px 1fr; gap: 12px 20px; font-size: 14.5px; }
+  .stack-cat { font-family: var(--mono); color: var(--text-dim); font-size: 13px; padding-top: 2px; }
+  .stack-items { color: var(--text); }
+  .stack-items .wip { color: var(--text-dim); font-size: 13px; }
+
+  .log-entry {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 4px 14px;
+    align-items: baseline;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 14.5px;
+  }
+  .log-entry:last-child { border-bottom: none; }
+  .hash { font-family: var(--mono); color: var(--sage); font-size: 13px; }
+  .log-msg { color: var(--text); }
+  .log-org { display: block; color: var(--text-dim); font-size: 13px; margin-top: 2px; }
+  .log-date { font-family: var(--mono); color: var(--text-dim); font-size: 12.5px; white-space: nowrap; }
+  .log-verify { grid-column: 2 / 3; margin-top: 2px; }
+  .log-verify a { font-size: 12.5px; }
+
+  .card {
+    padding: 16px 18px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    margin-bottom: 14px;
+  }
+  .card:last-child { margin-bottom: 0; }
+  .card.draft { opacity: 0.6; }
+  .card-name { font-family: var(--mono); font-size: 15px; color: var(--amber); display: block; margin-bottom: 6px; text-decoration: none; }
+  .card-name:hover { text-decoration: underline; }
+  .card-name.static { color: var(--text-dim); }
+  .card-desc { font-size: 14px; color: var(--text-dim); margin: 0; }
+  .card-meta { font-family: var(--mono); font-size: 12px; color: var(--sage); margin-top: 8px; }
+  .card-meta.muted { color: var(--text-dim); }
+
+  .award-line {
+    font-family: var(--mono);
+    font-size: 13.5px;
+    color: var(--sage);
+    margin: 0 0 6px;
+  }
+  .award-line::before { content: "✓ "; }
+
+  footer { padding: 40px 0 60px; }
+  .contact-list { display: flex; flex-direction: column; gap: 8px; font-family: var(--mono); font-size: 14px; }
+  .contact-list a { color: var(--text); }
+  .contact-list a:hover { color: var(--amber); }
+  .foot-note { margin-top: 32px; color: var(--text-dim); font-size: 12.5px; font-family: var(--mono); }
+
+  @media (max-width: 560px) {
+    .stack-grid { grid-template-columns: 1fr; gap: 2px; }
+    .stack-cat { padding-top: 10px; }
+    .log-entry { grid-template-columns: 1fr; }
+    .log-date { grid-column: 1 / 2; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <span class="nav-tag">kapish@portfolio</span>
+    <div>
+      <a href="https://github.com/kapishmagotra1122-creator" target="_blank" rel="noopener">github</a>
+      <a href="https://www.linkedin.com/in/kapish-magotra-84661b415/" target="_blank" rel="noopener">linkedin</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="prompt">whoami</p>
+    <h1><span id="typed"></span></h1>
+    <p class="role">First-year B.Tech CSE student at CGC Mohali, currently stacking verified credentials in cloud and AI — while running a content brand on the side and, off-screen, picking up wins at district and national-level singing competitions.</p>
+    <div class="hero-links">
+      <a class="btn primary" href="https://github.com/kapishmagotra1122-creator" target="_blank" rel="noopener">view github</a>
+      <a class="btn" href="https://www.linkedin.com/in/kapish-magotra-84661b415/" target="_blank" rel="noopener">connect on linkedin</a>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <p class="tag">## about</p>
+    <p class="about-text">I blend technical logic with digital creativity. Alongside coursework, I'm building real, verifiable skills in cloud and AI, one small commit at a time — while also running my own content brand and working with fashion labels as a paid social media creator. Off-screen, I'm an award-winning vocalist with wins at both district and national-level singing competitions. Whether I'm registering an app in Azure, tracking a campaign through a promo code, or producing a Reel, the throughline is the same: understand the system, then make it work for an audience.</p>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <p class="tag">## stack</p>
+    <div class="stack-grid">
+      <span class="stack-cat">cloud</span>
+      <span class="stack-items">Microsoft Azure, Microsoft Entra ID</span>
+
+      <span class="stack-cat">dev tools</span>
+      <span class="stack-items">Git, GitHub, GitHub Actions</span>
+
+      <span class="stack-cat">ai</span>
+      <span class="stack-items">Generative AI fundamentals, prompt design (Vertex AI), AI ethics</span>
+
+      <span class="stack-cat">content &amp; marketing</span>
+      <span class="stack-items">Short-form video (Reels), audience growth, brand partnerships, promo-code campaign tracking</span>
+
+      <span class="stack-cat">performance</span>
+      <span class="stack-items">Vocals — award-winning, district &amp; national level</span>
+
+      <span class="stack-cat">web</span>
+      <span class="stack-items">HTML, CSS, Flexbox &amp; Grid <span class="wip">— in progress via freeCodeCamp</span></span>
+    </div>
+  </div>
+</section>
+
+<section id="credentials">
+  <div class="wrap">
+    <p class="tag">## commit log</p>
+
+    <div class="log-entry">
+      <span class="hash">3cae2d0</span>
+      <span>
+        <span class="log-msg">Microsoft Applied Skills: Get started with Azure management tasks</span>
+        <span class="log-org">Microsoft</span>
+      </span>
+      <span class="log-date">Sep 2026</span>
+      <span class="log-verify"><a href="https://www.linkedin.com/in/kapish-magotra-84661b415/details/certifications/" target="_blank" rel="noopener">view credential</a></span>
+    </div>
+
+    <div class="log-entry">
+      <span class="hash">6a9b1d7</span>
+      <span>
+        <span class="log-msg">Introduction to Cloud — job simulation</span>
+        <span class="log-org">Datacom, via Forage</span>
+      </span>
+      <span class="log-date">Sep 2026</span>
+      <span class="log-verify"><a href="https://www.linkedin.com/in/kapish-magotra-84661b415/details/certifications/" target="_blank" rel="noopener">view credential</a></span>
+    </div>
+
+    <div class="log-entry">
+      <span class="hash">gen-ai</span>
+      <span>
+        <span class="log-msg">Getting Started with Generative AI</span>
+        <span class="log-org">IBM SkillsBuild</span>
+      </span>
+      <span class="log-date">Sep 2026</span>
+      <span class="log-verify"><a href="https://www.linkedin.com/in/kapish-magotra-84661b415/details/certifications/" target="_blank" rel="noopener">view credential</a></span>
+    </div>
+
+    <div class="log-entry">
+      <span class="hash">vertex-ai</span>
+      <span>
+        <span class="log-msg">Prompt Design in Vertex AI Skill Badge</span>
+        <span class="log-org">Google</span>
+      </span>
+      <span class="log-date">Sep 2026</span>
+      <span class="log-verify"><a href="https://www.linkedin.com/in/kapish-magotra-84661b415/details/certifications/" target="_blank" rel="noopener">view credential</a></span>
+    </div>
+  </div>
+</section>
+
+<section id="brand-work">
+  <div class="wrap">
+    <p class="tag">## brand work</p>
+
+    <div class="card">
+      <span class="card-name static">Social Media Content Creator — Coitonic Outfits</span>
+      <p class="card-desc">Freelance, Aug 2025 – Dec 2025 · Jammu &amp; Kashmir, India (Hybrid). Promoted products at scale as a paid content creator, running audience-facing campaigns tracked through a personal promo code.</p>
+      <p class="card-meta">promo code: KAPISH07</p>
+    </div>
+
+    <div class="card">
+      <span class="card-name static">Content Creator — Self-Managed Digital Brand</span>
+      <p class="card-desc">Conceptualize, shoot, and edit short-form video content (Reels) focused on lifestyle and music. Grow an engaged audience by tracking trends and platform algorithms.</p>
+      <p class="card-meta muted">ongoing</p>
+    </div>
+  </div>
+</section>
+
+<section id="performances">
+  <div class="wrap">
+    <p class="tag">## performances</p>
+    <p class="award-line">District-level singing competition — winner</p>
+    <p class="award-line">National-level singing competition — winner</p>
+    <p class="about-text" style="margin-top: 14px;">Active singer and social media influencer within CGC Mohali's cultural community, involved with the E-Cell's cultural, content-creation, and marketing committees.</p>
+  </div>
+</section>
+
+<section id="repos">
+  <div class="wrap">
+    <p class="tag">## repos</p>
+
+    <div class="card">
+      <a class="card-name" href="https://github.com/kapishmagotra1122-creator/datacom-github-actions" target="_blank" rel="noopener">datacom-github-actions</a>
+      <p class="card-desc">Registers an app with Microsoft Entra ID and runs an automated GitHub Actions workflow on push. Built during Datacom's cloud job simulation.</p>
+      <p class="card-meta">✓ workflow passing</p>
+    </div>
+
+    <div class="card draft">
+      <span class="card-name static">freecodecamp-responsive-web-design</span>
+      <p class="card-desc">HTML/CSS project set from freeCodeCamp's Responsive Web Design path. Landing here as each project is finished.</p>
+      <p class="card-meta muted">○ in progress</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p class="tag">## reach me</p>
+    <div class="contact-list">
+      <a href="https://www.linkedin.com/in/kapish-magotra-84661b415/" target="_blank" rel="noopener">linkedin.com/in/kapish-magotra-84661b415</a>
+      <a href="https://github.com/kapishmagotra1122-creator" target="_blank" rel="noopener">github.com/kapishmagotra1122-creator</a>
+      <a href="mailto:kapishmagotra1122@gmail.com">kapishmagotra1122@gmail.com</a>
+    </div>
+    <p class="foot-note">Sahibzada Ajit Singh Nagar, Punjab, India · last updated Sep 2026</p>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var text = "Kapish Magotra";
+    var el = document.getElementById('typed');
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduced) {
+      el.textContent = text;
+      el.classList.add('done');
+      return;
+    }
+
+    var i = 0;
+    function tick() {
+      if (i <= text.length) {
+        el.textContent = text.slice(0, i);
+        i++;
+        setTimeout(tick, 55);
+      } else {
+        el.classList.add('done');
+      }
+    }
+    tick();
+  })();
+</script>
+
+</body>
+</html>
